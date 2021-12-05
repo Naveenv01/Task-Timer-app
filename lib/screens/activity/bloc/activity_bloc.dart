@@ -16,7 +16,7 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState> {
 
   FutureOr<void> onAddActivityEvent(
       AddActivityEvent event, Emitter<ActivityState> emit) {
-    activity.add(ActivityModel(event.title, event.description));
+    activity.add(ActivityModel(event.title, event.description,event.duration));
     emit(ActivityInitial());
     emit(ActivityLoadedState(activity));
   }

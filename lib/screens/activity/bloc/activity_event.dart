@@ -10,6 +10,7 @@ abstract class ActivityEvent extends Equatable {
 class AddActivityEvent extends ActivityEvent {
   final String title;
   final String description;
+  final Duration duration;
 
-  AddActivityEvent(this.title, this.description);
+  AddActivityEvent(this.title, this.description, this.duration);
 }
