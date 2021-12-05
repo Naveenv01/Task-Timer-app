@@ -16,62 +16,81 @@ class SaveScreen extends StatefulWidget {
 class _SaveScreenState extends State<SaveScreen> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
-  TimeOfDay selectedTime = TimeOfDay.now();
-  _selectTime(BuildContext context) async {
 
-    final TimeOfDay? timeOfDay = await showTimePicker(
-      context: context,
-      initialTime: selectedTime,
-      initialEntryMode: TimePickerEntryMode.input,
-
-    );
-    if (timeOfDay != null && timeOfDay != selectedTime) {
-      setState(() {
-        selectedTime = timeOfDay;
-      });
-    }
-    print({selectedTime.hour} );
-  }
+final TextEditingController Hourscontroller=TextEditingController();
+  final TextEditingController Minutecontroller=TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       appBar: AppBar(
+        backgroundColor: Colors.black,
         title: Text("text"),
       ),
-      body: Container(
-        padding: EdgeInsets.all(20),
-        child: Column(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
 
-          children: [
-            TextField(
-              controller: titleController,
-              decoration: InputDecoration(hintText: 'Title'),
-            ),
-            TextField(
-              controller: descriptionController,
-              decoration: InputDecoration(hintText: 'description'),
-            ),
-            SizedBox(
-              height: 50,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                _selectTime(context);
-              },
-              child: Text("Choose Time"),
-            ),
+            decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black54,
+                    blurRadius: 2.0,
+                    spreadRadius: 0.0,
+                    offset: Offset(3.0, 3.0), // shadow direction: bottom right
+                  )
+                ],
+                color: Colors.black87,  borderRadius: BorderRadius.all(Radius.circular(20))),
+            padding: EdgeInsets.all(20),
 
-            GestureDetector(
-              child: Text("save"),
-              onTap: () {
-                context.read<ActivityBloc>().add(AddActivityEvent(
-                    titleController.text, descriptionController.text,
-                    Duration(hours: selectedTime.hour, minutes: selectedTime.minute)));
-                Navigator.of(context).pop();
-              },
-            )
-          ],
+            child: Column(
+
+              children: [
+                TextField(
+                  controller: titleController,
+                  decoration: InputDecoration(hintText: 'Title',hintStyle: TextStyle(color: Colors.white)),
+                ),
+                SizedBox(height: 20,),
+                TextField(
+                  controller: descriptionController,
+                  decoration: InputDecoration(hintText: 'description',hintStyle: TextStyle(color: Colors.white)),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                TextField(
+                  controller: Hourscontroller,
+                  decoration: InputDecoration(hintText: 'Enter hours',hintStyle: TextStyle(color: Colors.white)),
+
+                ),
+                SizedBox(height: 20,),
+                TextField(
+                  controller: Minutecontroller,
+                  decoration: InputDecoration(hintText: 'Enter Minutes',hintStyle: TextStyle(color: Colors.white)),
+                ),
+
+
+                SizedBox(height: 50,),
+
+                GestureDetector(
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.all(Radius.circular(10))),
+                          child: Text("save",style:TextStyle(color: Colors.white) ,))),
+                  onTap: () {
+                    context.read<ActivityBloc>().add(AddActivityEvent(
+                        titleController.text, descriptionController.text,
+                        Duration(hours: int.parse(Hourscontroller.text), minutes:int.parse(Minutecontroller.text))));
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            ),
+          ),
         ),
       ),
     );

@@ -17,6 +17,7 @@ class _ActivityViewState extends State<ActivityView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor:Colors.black,
         title: Text("Task-Timer"),
       ),
       body: BlocBuilder<ActivityBloc, ActivityState>(
@@ -29,21 +30,35 @@ class _ActivityViewState extends State<ActivityView> {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
+
                       padding: EdgeInsets.all(20),
-                      height: 300,
+
                       decoration: BoxDecoration(
-                          color: Colors.grey,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black54,
+                              blurRadius: 2.0,
+                              spreadRadius: 0.0,
+                              offset: Offset(3.0, 3.0), // shadow direction: bottom right
+                            )
+                          ],
+                          color: Colors.black87,
                           borderRadius: BorderRadius.all(Radius.circular(20))),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
 
-                          Text(state.activites[index].title,style: TextStyle(),),
-                          Padding(padding: EdgeInsets.all(10)),
-                          Text(state.activites[index].description,textAlign: TextAlign.left,),
+
+                          Align(child: Text(state.activites[index].title,style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.white),)),
+                          SizedBox(height: 10,),
+                          Text("Description",style:TextStyle(fontSize: 20,color: Colors.white),),
+                          SizedBox(height: 10,),
+                          Container(
+                              child: Text(state.activites[index].description,textAlign: TextAlign.left,style: TextStyle(color: Colors.white),)
+                          ),
+                          SizedBox(height: 15,),
                           CountDownTimer(secondsRemaining: state.activites[index].duration.inSeconds, whenTimeExpires:(){
-                            print("hello");
                           })
                         ],
                       ),
@@ -51,10 +66,20 @@ class _ActivityViewState extends State<ActivityView> {
                   );
                 });
           }
-          return Container();
+          return Container(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Text("You Don't Have any Task left Create one",style: TextStyle(fontSize: 20),),
+
+              ),
+
+            ),
+          );
         },
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.black,
         child: Icon(Icons.add),
         onPressed: () {
           Navigator.push(
@@ -80,6 +105,7 @@ class CountDownTimer extends StatefulWidget {
   final VoidCallback whenTimeExpires;
   final TextStyle? countDownTimerStyle;
   final Function(int seconds)? countDownFormatter;
+
 
   @override
   State createState() => _CountDownTimerState();
@@ -171,20 +197,35 @@ class _CountDownTimerState extends State<CountDownTimer>
           AnimatedBuilder(
             animation: _controller,
             builder: (_, Widget? child) {
-              return Text(
-                timerDisplayString,
-                style: widget.countDownTimerStyle,
+              return Container(
+                decoration: BoxDecoration(color: Colors.white,borderRadius: BorderRadius.all(Radius.circular(10))),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+
+
+                    timerDisplayString,
+                    style: widget.countDownTimerStyle,
+
+
+                  ),
+                ),
               );
             },
           ),
-          TextButton(onPressed: (){
-            _controller.stop();
+          Row(
+            children: [
+              TextButton(onPressed: (){
+                _controller.stop();
 
-          }, child: Text("Stop")),
-          TextButton(onPressed: (){
-            _controller.reverse();
+              }, child: Text("Stop")),
+              TextButton(onPressed: (){
+                _controller.reverse();
 
-          }, child: Text("Resume"))
+              }, child: Text("Resume"))
+            ],
+          ),
+
         ],
       ),
     );
