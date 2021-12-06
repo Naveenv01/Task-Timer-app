@@ -14,3 +14,9 @@ class AddActivityEvent extends ActivityEvent {
 
   AddActivityEvent(this.title, this.description, this.duration);
 }
+
+class CompleteActivityEvent extends ActivityEvent {
+  final int id;
+
+  CompleteActivityEvent(this.id);
+}

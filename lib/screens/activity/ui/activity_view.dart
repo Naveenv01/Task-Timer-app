@@ -17,29 +17,28 @@ class _ActivityViewState extends State<ActivityView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor:Colors.black,
+        backgroundColor: Colors.black,
         title: Text("Task-Timer"),
       ),
       body: BlocBuilder<ActivityBloc, ActivityState>(
         builder: (context, state) {
           if (state is ActivityLoadedState) {
             return ListView.builder(
-              scrollDirection: Axis.vertical,
+                scrollDirection: Axis.vertical,
                 itemCount: state.activites.length,
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
-
                       padding: EdgeInsets.all(20),
-
                       decoration: BoxDecoration(
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black54,
                               blurRadius: 2.0,
                               spreadRadius: 0.0,
-                              offset: Offset(3.0, 3.0), // shadow direction: bottom right
+                              offset: Offset(
+                                  3.0, 3.0), // shadow direction: bottom right
                             )
                           ],
                           color: Colors.black87,
@@ -48,18 +47,43 @@ class _ActivityViewState extends State<ActivityView> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-
-
-                          Align(child: Text(state.activites[index].title,style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.white),)),
-                          SizedBox(height: 10,),
-                          Text("Description",style:TextStyle(fontSize: 20,color: Colors.white),),
-                          SizedBox(height: 10,),
-                          Container(
-                              child: Text(state.activites[index].description,textAlign: TextAlign.left,style: TextStyle(color: Colors.white),)
+                          Align(
+                              child: Text(
+                            state.activites[index].title,
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white),
+                          )),
+                          SizedBox(
+                            height: 10,
                           ),
-                          SizedBox(height: 15,),
-                          CountDownTimer(secondsRemaining: state.activites[index].duration.inSeconds, whenTimeExpires:(){
-                          })
+                          Text(
+                            "Description",
+                            style: TextStyle(fontSize: 20, color: Colors.white),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                              child: Text(
+                            state.activites[index].description,
+                            textAlign: TextAlign.left,
+                            style: TextStyle(color: Colors.white),
+                          )),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          CountDownTimer(
+                            id: index,
+                            secondsRemaining:
+                                state.activites[index].duration.inSeconds,
+                            whenTimeExpires: () {
+                              context
+                                  .read<ActivityBloc>()
+                                  .add(CompleteActivityEvent(index));
+                            },
+                          )
                         ],
                       ),
                     ),
@@ -70,10 +94,11 @@ class _ActivityViewState extends State<ActivityView> {
             child: Center(
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
-                child: Text("You Don't Have any Task left Create one",style: TextStyle(fontSize: 20),),
-
+                child: Text(
+                  "You Don't Have any Task left Create one",
+                  style: TextStyle(fontSize: 20),
+                ),
               ),
-
             ),
           );
         },
@@ -90,8 +115,6 @@ class _ActivityViewState extends State<ActivityView> {
   }
 }
 
-
-
 class CountDownTimer extends StatefulWidget {
   const CountDownTimer({
     Key? key,
@@ -99,13 +122,15 @@ class CountDownTimer extends StatefulWidget {
     required this.whenTimeExpires,
     this.countDownFormatter,
     this.countDownTimerStyle,
+    required this.id,
   }) : super(key: key);
+
+  final int id;
 
   final int secondsRemaining;
   final VoidCallback whenTimeExpires;
   final TextStyle? countDownTimerStyle;
   final Function(int seconds)? countDownFormatter;
-
 
   @override
   State createState() => _CountDownTimerState();
@@ -159,8 +184,6 @@ class _CountDownTimerState extends State<CountDownTimer>
       });
   }
 
-
-
   @override
   void didUpdateWidget(CountDownTimer oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -198,34 +221,44 @@ class _CountDownTimerState extends State<CountDownTimer>
             animation: _controller,
             builder: (_, Widget? child) {
               return Container(
-                decoration: BoxDecoration(color: Colors.white,borderRadius: BorderRadius.all(Radius.circular(10))),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(10))),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-
-
                     timerDisplayString,
-                    style: widget.countDownTimerStyle,
-
-
+                    style: TextStyle(fontSize: 21),
                   ),
                 ),
               );
             },
           ),
+          SizedBox(
+            height: 20,
+          ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              TextButton(onPressed: (){
-                _controller.stop();
-
-              }, child: Text("Stop")),
-              TextButton(onPressed: (){
-                _controller.reverse();
-
-              }, child: Text("Resume"))
+              TextButton(
+                  onPressed: () {
+                    if (_controller.isAnimating) _controller.stop();
+                  },
+                  child: Text("Stop")),
+              TextButton(
+                  onPressed: () {
+                    if (!_controller.isAnimating) _controller.reverse();
+                  },
+                  child: Text("Resume")),
+              TextButton(
+                  onPressed: () {
+                    context
+                        .read<ActivityBloc>()
+                        .add(CompleteActivityEvent(widget.id));
+                  },
+                  child: Text("Finished"))
             ],
           ),
-
         ],
       ),
     );

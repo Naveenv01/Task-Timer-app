@@ -37,6 +37,7 @@ dependencies:
   moor_flutter: ^4.0.0
   flutter_bloc: ^8.0.0
   equatable: ^2.0.3
+  numberpicker: ^2.1.1
 
 dev_dependencies:
   flutter_test:
