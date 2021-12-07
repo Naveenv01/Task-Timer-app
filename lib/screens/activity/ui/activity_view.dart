@@ -252,15 +252,47 @@ class _CountDownTimerState extends State<CountDownTimer>
                   child: Text("Resume")),
               TextButton(
                   onPressed: () {
-                    context
-                        .read<ActivityBloc>()
-                        .add(CompleteActivityEvent(widget.id));
+                    showAlertDialog(context);
                   },
-                  child: Text("Finished"))
+                  child: Text("Delete task"))
             ],
           ),
         ],
       ),
+    );
+  }
+
+  showAlertDialog(BuildContext context) {
+    Widget cancelButton = TextButton(
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+      child: Text("Cancel"),
+    );
+    Widget continueButton = TextButton(
+      child: Text("Continue"),
+      onPressed: () {
+        context.read<ActivityBloc>().add(CompleteActivityEvent(widget.id));
+        Navigator.of(context).pop();
+      },
+    );
+
+    AlertDialog alert = AlertDialog(
+      shape:
+          RoundedRectangleBorder(borderRadius: new BorderRadius.circular(15)),
+      title: Text("Confirm"),
+      content: Text("Are you sure you want to delete a task?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 }
